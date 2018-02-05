@@ -1,3 +1,7 @@
+//NIKOLAAS BENDER
+//THIS ALL WORKS PERFECTLY
+//ASSIGNMENT 2
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -54,7 +58,7 @@ int getTotalNumberNonStopWords(wordItem *wordItemList, int numberOfUniqueWords){
     }
     
     //THIS SHOULD BE THE CORRECT ANSWER BUT THEAUTO GRADER HAS OTHER IDEAS
-    return total + 38;
+    return total;
 }
 
 void arraySort(wordItem *wordItemList, int numberOfUniqueWords){
@@ -117,7 +121,7 @@ int wordExist(string word, wordItem *wordItemList, int cap){
         }
     }
 
-    return 0;
+    return -1;
 }
 
 
@@ -134,27 +138,30 @@ int main(int argc, char *argv[]){
     int uniquewds = 0;
     int resized = 0;
 
+    string ss;
+
 
 //THIS IS WHERE STUFF IS READ IN
     if(mainfile.is_open()){
-        string ss;
         while(mainfile >> ss){
             if(uniquewds == cap){
                 bigList = resize(bigList, &cap);
                 resized++;
             }
             if(!isStopWord(ss, smlList)){
-                if(!wordExist(ss, bigList, cap)){
+                int index=wordExist(ss, bigList, cap);
+                if( index== -1){
                     if(uniquewds == cap){
                         bigList = resize(bigList, &cap);
                         resized++;   
                     }
                     bigList[uniquewds].word = ss;
+                    bigList[uniquewds].count++;
                     uniquewds++;
+                }else{
+                       bigList[index].count++;
                 }
-                if(wordExist(ss, bigList, cap)){
-                    bigList[wordExist(ss, bigList, cap)].count++;
-                }
+                 
             }
         }
     }
@@ -162,15 +169,6 @@ int main(int argc, char *argv[]){
     mainfile.close();
 
     arraySort(bigList, cap);
-
-    //A LITTLE FIDGING BECAUSE THE AUTO GRADER IS WEIRD
-    uniquewds = 1;
-
-    for(int j = 0; j < cap; j++){
-        if(bigList[j].count > 0){
-            uniquewds++;
-        }
-    }
 
     int print = stoi(argv[1]);
 
