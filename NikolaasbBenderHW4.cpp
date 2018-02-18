@@ -7,151 +7,11 @@ CU BOULDER
 #include <string>
 #include <fstream>
 
+#include "Assignment4.h"
+
 using namespace std;
 
-struct city{
-	
-	city *next;
-	string cityName;
-	string message;
-};
-
-//======================================================================
-//THIS BUILDS THE DEFAULT NETWROK
-//THIS WORKS
-//======================================================================
-city *buildNetwork(){
-
-	//INITIALIZING EACH CITY BY MAJOR AIRPORT CALL SIGN
-	city *lax = new city;
-	city *phx = new city;
-	city *den = new city;
-	city *dfw = new city;
-	city *stl = new city;
-	city *ord = new city;
-	city *atl = new city;
-	city *dca = new city;
-	city *lga = new city;
-	city *bos = new city;
-
-	//INITIALIZING EACH CITY NAME 
-	lax -> cityName = "Los Angeles";
-	phx -> cityName = "Phoenix";
-	den -> cityName = "Denver";
-	dfw -> cityName = "Dallas";
-	stl -> cityName = "St. Louis";
-	ord -> cityName = "Chicago";
-	atl -> cityName = "Atlanta";
-	dca -> cityName = "Washington, D.C.";
-	lga -> cityName = "New York";
-	bos -> cityName = "Boston";
-
-	//THIS INITIALIZES THE LINK
-	lax -> next = phx;
-	phx	-> next = den;
-	den	-> next = dfw;
-	dfw	-> next = stl;
-	stl	-> next = ord;
-	ord	-> next = atl;
-	atl	-> next = dca;
-	dca	-> next = lga;
-	lga -> next = bos;
-	bos	-> next =  nullptr;
-
-	return lax;
-}
-
-//======================================================================
-//THIS FINDS A CITY BASED UPON THE NAME OF THE CITY
-//IT SHOULD WORK 
-//======================================================================
-city *fndCty(city *head, string city){
-
-	while(head -> cityName != city){
-		head = head -> next;
-	}
-
-	return head;
-}
-
-//======================================================================
-//THIS SHOULD ADD THE CITY
-//REALLY IT NEEDS THE CITY FINDER TO FEED INTO IT
-//THIS WORKS
-//======================================================================
-city *addCity(city *head, city *previous, string ctyName){
-
-	//THIS IS THE NEW CITY THAT GETS INSERTED
-	city *nn = new city;
-
-	//THIS SETS THE CITY NAME
-	nn -> cityName = ctyName;
-
-	//THIS WORKS FOR INSERTING AT THE END OR THE MIDDLE
-	if(previous != NULL){
-		//THIS SETS THE NEW CITY TO BE THE NEXT
-		//AS DICTATED BY PREVIOUS
-		nn -> next = previous -> next;
-
-		//SET PREVIOUS NEXT TO THE NEW CITY
-		previous -> next = nn;
-	}else if(previous == NULL){
-		nn -> next = head;
-
-		head = nn;
-	}
-
-	return head;	
-}
-
-//======================================================================
-//THIS TRANSMITS THE MESSAGE FROM A FILE 
-//THROUGH THE NETWORKONE STRING AT A TIME
-//THIS WORKS
-//======================================================================
-void transmitMsg(city *head){
-     
- 	city *tmp = new city;
- 	tmp = head;
-
- 	string ss;
-
- 	ifstream mainfile;
-	
-	mainfile.open("messageIn.txt");
-
-	if(mainfile.is_open()){
-        while(mainfile >> ss){
-			while(tmp -> next != nullptr){
-		 		tmp -> message = ss;
-		 		cout << tmp -> cityName << " received " << tmp -> message << endl;
-		 		tmp = tmp -> next;
-		 	}
-		 	tmp -> message = ss;
-		 	cout << tmp -> cityName << " received " << tmp -> message << endl;
-		 	tmp = head;
-		}
-	}
-	
-	mainfile.close();    
-}
-
-//======================================================================
-//THIS PRINTS THE WHOLE PATH
-//THIS WORKS 
-//======================================================================
-void printPath(city *head){
-
-	cout << "===CURRENT PATH===" << endl;
-
-	while(head != nullptr){
-		cout << head -> cityName << " -> ";
-		head = head -> next;
-	}
-	cout << " NULL" << endl;
-
-	cout << "==================" << endl;
-}
+//g++ -std=c++11 Assignment4.cpp Assignment4.h NikolaasbBenderHW4.cpp -o NikolaasbBenderHW4
 
 //======================================================================
 //THIS IS THE MENU THAT THE USER USES
@@ -171,12 +31,12 @@ int menu(){
 	return n;
 }
 
-int main(){
+int main(int argc, char *argv[]){
 
 	int o = 0;
 
-	//THIS SETS UP THE HEAD
-	city *head;
+	//INITIALIZES THE CITY
+	CommunicationNetwork C2C;
 
 	//THIS IS THE OPTIONS MENU
 	while(o >= 0 && o <= 4){
@@ -185,22 +45,23 @@ int main(){
 
 		//THIS TAKES THE OPTION SELECTED FROM MENU
 		o = menu();
-
+		
 		//BUILD NETWORK
 		if(o == 1){
-			head = buildNetwork();
+			C2C.buildNetwork();
+			C2C.printNetwork();
 			o = 0;
 		}
 
 		//PRINT NETWORK
 		if(o == 2){
-			printPath(head);
+			C2C.printNetwork();
 			o = 0;
 		}
 
 		//TRANSMIT MESSAGE
 		if(o == 3){
-			transmitMsg(head);
+			C2C.transmitMsg(argv[1]);
 			o = 0;
 		}
 
@@ -212,7 +73,7 @@ int main(){
 			cout << "Enter a previous City name:" << endl;
 			string prev;
 			cin >> prev;
-			head = addCity(head, fndCty(head, prev), nc);
+			C2C.addCity(nc, prev);
 			o = 0;
 		}
 
