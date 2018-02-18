@@ -17,12 +17,14 @@ using namespace std;
 //THIS IS THE MENU THAT THE USER USES
 //======================================================================
 int menu(){
-	cout << "======Main Menu======" << endl <<
-	"1. Build Network" << endl <<
-	"2. Print Network Path" << endl <<
-	"3. Transmit Message Coast-To-Coast" << endl <<
-	"4. Add City"<< endl <<
-	"5. Quit" << endl;
+	cout << "======Main Menu======" << endl
+			<< "1. Build Network" << endl
+			<< "2. Print Network Path" << endl
+			<< "3. Transmit Message Coast-To-Coast-To-Coast" << endl
+			<< "4. Add City" << endl
+			<< "5. Delete City" << endl
+			<< "6. Clear Network" << endl
+			<< "7. Quit" <<endl;
 
 	int n;
 
@@ -39,7 +41,7 @@ int main(int argc, char *argv[]){
 	CommunicationNetwork C2C;
 
 	//THIS IS THE OPTIONS MENU
-	while(o >= 0 && o <= 4){
+	while(o >= 0 && o <= 6){
 		//THIS RESETS o FOR EACH TIME IT GETS USED
 		o = 0;
 
@@ -67,18 +69,31 @@ int main(int argc, char *argv[]){
 
 		//ADDS A CITY
 		if(o == 4){
-			cout << "Enter a City name:" << endl;
+			cout << "Enter a city name:" << endl;
 			string nc;
 			cin >> nc;
-			cout << "Enter a previous City name:" << endl;
+			cout << "Enter a previous city name:" << endl;
 			string prev;
 			cin >> prev;
 			C2C.addCity(nc, prev);
 			o = 0;
 		}
 
+		//DELETE CITY
+		if(o == 5){
+			string dc;
+			cout << "Enter a city name:" << endl;
+			cin >> dc;
+			C2C.deleteCity(dc);
+		}
+
+		//DELETE NETWORK
+		if(o == 6){
+			C2C.deleteNetwork();
+		}
+
 		//ERROR 
-		if(o > 5){
+		if(o > 8){
 			cout << "PLEASE ENTER THE NUMBER OF THE OPTION YOU WANT " << o << " IS NOT A VALID OPTION" << endl;
 			o = 0;
 		}
@@ -86,7 +101,5 @@ int main(int argc, char *argv[]){
 	}
 
 	cout << "Goodbye!" << endl;
-
-
-
+	C2C.deleteNetwork();
 }
